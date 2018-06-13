@@ -246,9 +246,158 @@ bash ./install-nginx.sh yes 202.38.95.0/24 james@ustc.edu.cn "Zhang Huanjie"
 
 执行完脚本，重新启动，然后请参考 7.4 修改配置和后续工作
 
-## 十一、后续更精彩
+## 十一、HTTPS支持
 
-陆续有Let's Encrypt 证书申请，HTTPS开通等内容。
+警告：上海交大 章思宇 老师提醒，如果仅仅使用Nginx处理IPv6流量并支持HTTPS访问，同时处理IPv4流量的服务器不支持HTTPS，这时开通IPv6流量的HTTPS可能会带来负面影响，原因是有些搜索引擎会通过v6收录https的链接，导致v4用户不能访问。
+
+避免这种情况出现最好的解决办法是在v4/v6上同时支持HTTPS访问。
+
+假定 http://testsite.ustc.edu.cn 需要增加https支持，步骤如下：
+
+注：以下命令均在`sudo su -s`后执行
+
+11.1 下载getssl，准备环境
+
+`/etc/nginx/ssl/web`是用来存放Let's encrypt要用到随机数的目录
+
+```bash
+mkdir /etc/nginx/ssl/web
+cd /etc/nginx
+curl --silent https://raw.githubusercontent.com/srvrco/getssl/master/getssl > getssl ; chmod 700 getssl
+```
+
+11.2 在`/etc/nginx/nginx.conf`中增加 testsite.ustc.edu.cn 的配置，如下所示：
+```
+        server {
+                listen 80 ;
+                listen [::]:80 ;
+                server_name testsite.ustc.edu.cn;
+                access_log /var/log/nginx/host.testsite.ustc.edu.cn.access.log main;
+                location / {
+                        proxy_pass http://202.38.64.40/;
+                }
+                location /.well-known/ {
+                        root /etc/nginx/ssl/web/;
+                }
+        }
+```
+
+测试配置正常后，应用
+```
+nginx -t && service nginx restart		#这条命令也是可用的
+```
+
+11.3 生成并修改getssl配置
+
+生成配置(-U的含义是不检查getssl是否有新版本，会略快)：
+```
+cd /etc/nginx
+./getssl -U -c testsite.ustc.edu.cn
+```
+
+会生成配置文件`/root/.getssl/getssl.cfg`和`/root/.getssl/testsite.ustc.edu.cn/getssl.cfg`
+
+编辑文件`vi /root/.getssl/getssl.cfg`，修改3个地方（邮件是为了获取证书即将到期的通知）
+```
+CA="https://acme-v01.api.letsencrypt.org"
+ACCOUNT_EMAIL="james@ustc.edu.cn"
+#CHECK_REMOTE="true"
+ACL=('/etc/nginx/ssl/web/.well-known/acme-challenge')
+USE_SINGLE_ACL="true"
+```
+
+编辑文件`vi /root/.getssl/testsite.ustc.edu.cn/getssl.cfg`，内容为：
+```
+DOMAIN_KEY_LOCATION="/etc/nginx/ssl/testsite.ustc.edu.cn.key"
+DOMAIN_CHAIN_LOCATION="/etc/nginx/ssl/testsite.ustc.edu.cn.pem"
+```
+
+11.4 获取证书
+
+执行如下命令获取证书(-d是调试开关，可以显示更多的调试信息):
+```
+cd /etc/nginx
+./getssl -U -d testsite.ustc.edu.cn
+```
+执行完毕后，会产生2个文件`/etc/nginx/ssl/testsite.ustc.edu.cn.key`和`/etc/nginx/ssl/testsite.ustc.edu.cn.pem`。
+
+11.5 使用证书
+修改nginx.conf文件，对应的配置如下：
+```
+        server {
+                listen 80 ;
+                listen [::]:80 ;
+                listen 443 ssl http2;
+                listen [::]:443 ssl http2;
+                server_name testsite.ustc.edu.cn;
+                ssl_certificate /etc/nginx/ssl/testsite.ustc.edu.cn.pem;
+                ssl_certificate_key /etc/nginx/ssl/testsite.ustc.edu.cn.key;
+                add_header Strict-Transport-Security $hsts_header;
+                access_log /var/log/nginx/host.testsite.ustc.edu.cn.access.log main;
+                location / {
+                        proxy_pass http://202.38.64.40/;
+                }
+                location /.well-known/ {
+                        root /etc/nginx/ssl/web/;
+                }
+        }
+```
+
+11.6 测试配置正常后，应用
+```
+nginx -t && service nginx restart		#这条命令也是可用的
+```
+
+这时可以通过https://testsite.ustc.edu.cn访问
+
+11.7 证书更新
+
+Let's encrypt 证书有效期为90天，建议在60天时进行更新，更新的命令是；
+```
+cd /etc/nginx
+./getssl -U testsite.ustc.edu.cn
+nginx -t && service nginx restat
+```
+
+11.8 强制用户使用https访问
+
+上述设置，只要用户访问过https://testsite.ustc.edu.cn，在604800秒，即7天内，总是会用https方式访问。
+
+如果HTTPS运行稳定，可以考虑想强制用户使用https访问，将配置改为如下：
+```
+        server {
+                listen 80 ;
+                listen [::]:80 ;
+                server_name testsite.ustc.edu.cn;
+                access_log /var/log/nginx/host.testsite.ustc.edu.cn.access.log main;
+		location / {
+			return  301 https://$server_name$request_uri;
+		}
+                return  301 https://$server_name$request_uri;
+                location /.well-known/ {
+                        root /etc/nginx/ssl/web/;
+                }
+        }
+        server {
+                listen 443 ssl http2;
+                listen [::]:443 ssl http2;
+                server_name testsite.ustc.edu.cn;
+                ssl_certificate /etc/nginx/ssl/testsite.ustc.edu.cn.pem;
+                ssl_certificate_key /etc/nginx/ssl/testsite.ustc.edu.cn.key;
+                add_header Strict-Transport-Security $hsts_header;
+                access_log /var/log/nginx/host.testsite.ustc.edu.cn.access.log main;
+                location / {
+                        proxy_pass http://202.38.64.40/;
+                }
+        }
+```
+
+11.9 Let's encrypt 证书的数量和频度限制
+
+对使用影响最的是Let's encrypt 证书的频度限制，每7天仅仅允许申请20个证书，到达这个限制后，已有的证书仍旧可以更新。
+
+因此如果域名下有大量网站需哟代理，可以使用 *.ustc.edu.cn 之类的证书。
+
 
 ***
 欢迎 [加入我们整理资料](https://github.com/bg6cq/ITTS)
