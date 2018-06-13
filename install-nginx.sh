@@ -28,8 +28,7 @@ echo install nginx
 echo ssh client is $2
 
 echo ============= step 3
-rm /etc/localtime
-ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+timedatectl set-timezone Asia/Shanghai
 
 echo ============= step 4
 ufw enable
