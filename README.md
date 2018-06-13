@@ -24,7 +24,7 @@
 
 安装时，如果设置了网络，安装过程中会连接官方服务器获取最新的软件包，因此请保持网络畅通。
 
-注意：如果安装时没有设置网络，请参见下面的 配置网络部分。
+如果安装时没有设置网络，请参见下面的 配置网络部分。
 
 注意：Ubuntu 系统要求必须使用一个普通用户登录，执行需要特权的命令时，使用`sudo ....`来临时切换为root用户进行。如果需要以root身份执行较多的命令，可以使用`sudo su -`切换为root用户（虽然不建议这样做），这样一来就不需要每次输入`sudo`了。
 
@@ -77,8 +77,7 @@ etwork:
 
 默认安装的系统时区是UTC，以下命令可以修改为北京时间：
 ```
-sudo rm /etc/localtime
-sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+sudo timedatectl set-timezone Asia/Shanghai
 ```
 
 ## 四、设置防火墙
