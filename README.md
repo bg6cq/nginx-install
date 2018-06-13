@@ -348,7 +348,8 @@ cd /etc/nginx
 nginx -t && service nginx restart		#这条命令也是可用的
 ```
 
-这时可以通过https://testsite.ustc.edu.cn访问
+这时可以通过 https://testsite.ustc.edu.cn 访问，也可以使用[SSL Labs](https://www.ssllabs.com/ssltest/analyze.html)测试网站的SSL得分情况。
+
 
 正常工作后，可以将配置文件的变更在git中提交，命令是：
 ```bash
