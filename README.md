@@ -15,14 +15,14 @@
 * [上海交大镜像站](http://ftp.sjtu.edu.cn/ubuntu-cd/18.04/)
 * [163镜像站](http://mirrors.163.com/ubuntu-releases/18.04/)
 
-说明：这里还有个安装程序，更加灵活，熟练人士可以选择 [中国科大镜像站](http://mirrors.ustc.edu.cn/ubuntu-cdimage/releases/18.04/release/)。
+说明：这里还有个更加灵活的安装程序，熟练人士可以选择 [中国科大镜像站](http://mirrors.ustc.edu.cn/ubuntu-cdimage/releases/18.04/release/)。
 
-使用物理服务器或新建虚拟机，如果使用虚拟机，选择4个虚拟CPU，2G内存，40G硬盘一般就够用，类型可以选Ubuntu Linux(64-bit)。
+使用物理服务器或新建虚拟机。如果使用虚拟机，选择4个虚拟CPU，2G内存，40G硬盘一般就够用，类型可以选Ubuntu Linux(64-bit)。
 
 使用光盘镜像引导，安装即可，一般在10分钟内完成。如果有疑问，可以参考 
 [Ubuntu 18.04 Server 版安装过程图文详解](https://blog.csdn.net/zhengchaooo/article/details/80145744)。
 
-安装时，如果设置了网络，安装过程中会连接官方服务器获取最新的软件包，因此请保持网络畅通。
+如果安装时设置了网络，安装过程中会连接官方服务器获取最新的软件包，因此请保持网络畅通。
 
 如果安装时没有设置网络，请参见下面的 配置网络部分。
 
@@ -65,6 +65,8 @@ network:
 
 检查点：上述ping之类的命令测试网络正常。
 
+网络正确配置后，可以从其他机器ssh连接Nginx服务器，以方便后面的拷贝-粘贴命令。
+
 # 注意：以下 三--七 部分有快捷脚本可用，请参见 十、快捷脚本 
 
 ## 三、设置系统时区
@@ -79,12 +81,12 @@ sudo timedatectl set-timezone Asia/Shanghai
 安全是第一要务，对于Nginx服务器，对外需开通80、443端口，对部分地址开通22端口以方便管理。
 
 使用如下命令设置，请根据自己的管理地址段，替换下面的`202.38.64.0/24`
-```
+```bash
 sudo ufw enable
-sudo ufw default deny
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw allow proto tcp from 202.38.64.0/24 to any port 22
+sudo ufw default deny
 ```
 您可以使用命令`sudo ufw status numbered`查看设置的规则，如果设置错误，可以使用`sudo ufw delete [序号]`删除规则。
 
@@ -97,13 +99,13 @@ sudo ufw allow proto tcp from 202.38.64.0/24 to any port 22
 Linux系统防火墙需要使用conntrack模块记录tcp/udp的连接信息，默认的设置(最多6万连接)不太适合反向代理这种服务使用。
 
 5.1 编辑文件`sudo vi /etc/modules`，增加2行：
-```
+```bash
 nf_conntrack_ipv4
 nf_conntrack_ipv6
 ```
 
 5.2 编辑文件`sudo vi /etc/modprobe.d/nf_conntrak.conf`，增加1行(按照以下设置，最多40万连接)：
-```
+```bash
 options nf_conntrack hashsize=50000
 ```
 
@@ -166,7 +168,7 @@ net.netfilter.nf_conntrack_udp_timeout_stream = 30
 建议使用Git跟踪配置的变化。
 
 7.1 使用如下命令初始化（请修改自己的个人信息）：
-```
+```bash
 git config --global user.email "james@ustc.educ.cn"
 git config --global user.name "Zhang Huanje"
 
