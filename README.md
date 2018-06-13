@@ -51,13 +51,7 @@ Ubuntu网络配置与之前的变化较大，采用netplan管理，配置文件�
 请根据自己的网络情况，修改文件，修改后执行`sudo netplan apply`应用即可。
 
 ```
-udo ufw enable
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw allow 22/tcp
-sudo ufw allow proto tcp from 202.38.64.0/24 to any port 22
-sudo ufw default deny
-etwork:
+network:
     version: 2
     ethernets:
         ens160:
