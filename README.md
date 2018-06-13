@@ -245,7 +245,9 @@ bash ./install-nginx.sh yes 202.38.95.0/24 james@ustc.edu.cn "Zhang Huanjie"
 
 执行完脚本，重新启动，然后请参考 7.4 修改配置和后续工作
 
+## 十一、后续更精彩
 
+陆续有Let's encrypt 证书申请，https开通。
 
 ***
 欢迎 [加入我们整理资料](https://github.com/bg6cq/ITTS)
