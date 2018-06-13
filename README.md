@@ -369,7 +369,7 @@ nginx -t && service nginx restart
 
 11.8 强制用户使用https访问
 
-上述设置，只要用户访问过https://testsite.ustc.edu.cn，在604800秒，即7天内，总是会用https方式访问。
+上述设置，只要用户访问过 https://testsite.ustc.edu.cn ，在604800秒，即7天内，总是会用https方式访问。
 
 如果HTTPS运行稳定，可以考虑想强制用户使用https访问，将配置改为如下：
 ```
@@ -381,7 +381,6 @@ nginx -t && service nginx restart
 		location / {
 			return  301 https://$server_name$request_uri;
 		}
-                return  301 https://$server_name$request_uri;
                 location /.well-known/ {
                         root /etc/nginx/ssl/web/;
                 }
