@@ -90,7 +90,6 @@ sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 sudo ufw enable
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
-sudo ufw allow 22/tcp 
 sudo ufw allow proto tcp from 202.38.64.0/24 to any port 22
 sudo ufw default deny
 ```
@@ -115,10 +114,12 @@ nf_conntrack_ipv6
 options nf_conntrack hashsize=50000
 ```
 
-5.3 编辑文件`sudo vi /etc/security/limits.conf`，增加2行：
+5.3 编辑文件`sudo vi /etc/security/limits.conf`，增加4行：
 ```
 *               soft    nofile  655360
 *               hard    nofile  655360
+root            soft    nofile  655360
+root            hard    nofile  655360
 ```
 
 5.4 编辑文件`sudo /etc/sysctl.d/90-conntrack.conf`，内容为：

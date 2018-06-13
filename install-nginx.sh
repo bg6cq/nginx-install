@@ -35,7 +35,6 @@ echo ============= step 4
 ufw enable
 ufw allow 80/tcp
 ufw allow 443/tcp
-ufw allow 22/tcp
 ufw allow proto tcp from $2 to any port 22
 ufw default deny
 
@@ -47,8 +46,12 @@ echo ============= step 5.2
 echo "options nf_conntrack hashsize=50000" > /etc/modprobe.d/nf_conntrak.conf
 
 echo ============= step 5.3
-echo "*               soft    nofile  655360" >> /etc/security/limits.conf
-echo "*               hard    nofile  655360" >> /etc/security/limits.conf
+echo << EOF >>  /etc/security/limits.conf
+*               soft    nofile  655360
+*               hard    nofile  655360
+root            soft    nofile  655360
+root            hard    nofile  655360
+EOF
 
 echo ============= step 5.4
 cat << EOF > /etc/sysctl.d/90-conntrack.conf
