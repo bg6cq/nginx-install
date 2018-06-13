@@ -364,7 +364,7 @@ Let's encrypt 证书有效期为90天，建议在60天时进行更新，更新�
 ```
 cd /etc/nginx
 ./getssl -U testsite.ustc.edu.cn
-nginx -t && service nginx restat
+nginx -t && service nginx restart
 ```
 
 11.8 强制用户使用https访问
@@ -402,9 +402,9 @@ nginx -t && service nginx restat
 
 11.9 Let's encrypt 证书的数量和频度限制
 
-对使用影响最的是Let's encrypt 证书的频度限制，每7天仅仅允许申请20个证书，到达这个限制后，已有的证书仍旧可以更新。
+对使用影响最大的是Let's encrypt 证书的频度限制，每7天仅仅允许申请20个证书，到达这个限制后，已有的证书仍旧可以更新。
 
-因此如果域名下有大量网站需哟代理，可以使用 *.ustc.edu.cn 之类的证书。
+因此如果域名下有大量网站需要代理，可以使用 *.ustc.edu.cn 之类的通配符证书，申请一个证书供多个网站使用。
 
 
 ***
