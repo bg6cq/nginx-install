@@ -350,6 +350,13 @@ nginx -t && service nginx restart		#这条命令也是可用的
 
 这时可以通过https://testsite.ustc.edu.cn访问
 
+正常工作后，可以将配置文件的变更在git中提交，命令是：
+```bash
+cd /etc/nginx
+sudo git add nginx.conf
+sudo git commit -m "https://testsite.ustc.edu.cn ok"
+```
+
 11.7 证书更新
 
 Let's encrypt 证书有效期为90天，建议在60天时进行更新，更新的命令是；
