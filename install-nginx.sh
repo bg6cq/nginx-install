@@ -1,13 +1,13 @@
 #!/bin/bash
 
 
-if [ $# -eq 4 ]; then
+if [ ! $# -eq 4 ]; then
     echo bash ./install-nginx.sh yes x.x.x.x/24 james@ustc.edu.cn "Zhang Huanjie"
     echo x.x.x.x is your ssh client network
     echo such as 202.38.64.0/24
 fi
 
-if [ $1 == "yes" ]; then
+if [ ! $1 == "yes" ]; then
 	echo arg1 is not yes
 	exit
 fi
@@ -15,12 +15,13 @@ fi
 if [ -f /etc/nginx/nginx.conf ]; then
 	echo "/etc/nginx/nginx.conf exist, exit";
 	exit
-if
+fi
 
 id | grep root 
 retcode=$?
 if [ $retcode -eq 1 ]; then
 	echo you are not using root
+	exit
 fi
 
 echo install nginx
@@ -50,7 +51,7 @@ echo "*               soft    nofile  655360" >> /etc/security/limits.conf
 echo "*               hard    nofile  655360" >> /etc/security/limits.conf
 
 echo ============= step 5.4
-cat << EOF
+cat << EOF > /etc/sysctl.d/90-conntrack.conf
 net.netfilter.nf_conntrack_dccp_timeout_closereq = 60
 net.netfilter.nf_conntrack_dccp_timeout_closing = 60
 net.netfilter.nf_conntrack_dccp_timeout_open = 200
@@ -83,7 +84,7 @@ net.netfilter.nf_conntrack_tcp_timeout_time_wait = 30
 net.netfilter.nf_conntrack_tcp_timeout_unacknowledged = 30
 net.netfilter.nf_conntrack_udp_timeout = 10
 net.netfilter.nf_conntrack_udp_timeout_stream = 30
-EOF > /etc/sysctl.d/90-conntrack.conf
+EOF
 
 
 echo ============= step 6
@@ -109,12 +110,11 @@ cd /etc/nginx
 mv nginx.conf nginx.system.conf
 wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/nginx.conf
 
-echo ============= step 7.5
-
-chown www-data.adm /var/log/nginx
-chown www-data.adm /var/log/nginx/*
-
 echo end of script
-echo now plase do the following
-echo vi nginx.conf
+echo now please do a reboot!!!
+echo 
+echo after boot up, please do the following
+echo vi /etc/nginx/nginx.conf
 echo nginx -t
+echo 
+echo now please do a reboot!!!

@@ -17,14 +17,18 @@
 
 说明：这里还有个安装程序，更加灵活，熟练人士可以选择 [中国科大镜像站](http://mirrors.ustc.edu.cn/ubuntu-cdimage/releases/18.04/release/)。
 
-使用物理服务器或新建虚拟机，如果使用虚拟机，选择4个虚拟CPU，2G内存，40G硬盘一般就够用，类型可以选ubuntu 64bit。
+使用物理服务器或新建虚拟机，如果使用虚拟机，选择4个虚拟CPU，2G内存，40G硬盘一般就够用，类型可以选Ubuntu Linux(64-bit)。
 
 使用光盘镜像引导，安装即可，一般在10分钟内完成。如果有疑问，可以参考 
-[Ubuntu 18.04 Server 版安装过程图文详解](https://blog.csdn.net/zhengchaooo/article/details/80145744)，如果安装时没有设置网络，请参见下面的 配置网络部分。
+[Ubuntu 18.04 Server 版安装过程图文详解](https://blog.csdn.net/zhengchaooo/article/details/80145744)。
 
-安装完的系统占用磁盘空间为3.5G（可以用`df`查看）。
+安装时，如果设置了网络，安装过程中会连接官方服务器获取最新的软件包，因此请保持网络畅通。
+
+注意：如果安装时没有设置网络，请参见下面的 配置网络部分。
 
 注意：Ubuntu 系统要求必须使用一个普通用户登录，执行需要特权的命令时，使用`sudo ....`来临时切换为root用户进行。如果需要以root身份执行较多的命令，可以使用`sudo su -`切换为root用户（虽然不建议这样做），这样一来就不需要每次输入`sudo`了。
+
+安装完的系统占用磁盘空间为3.5G（可以用`df`查看）。
 
 ## 二、配置网络
 
@@ -194,20 +198,14 @@ sudo wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/nginx.con
 
 7.4 修改配置文件`sudo vi nginx.conf`，修改最后面配置，使用自己学校的主机名、日志文件名、IP地址。
 
-7.5 修改目录`/var/log/nginx`的属主以便记录日志：
-```
-sudo chown www-data.adm /var/log/nginx
-sudo chown www-data.adm /var/log/nginx/*
-```
-
-7.6 测试配置是否正确，下面是测试正确的显示：
+7.5 测试配置是否正确，下面是测试正确的显示：
 ```
 sudo nginx -t
 nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
 ```
 
-7.7 如果测试正确，执行以下命令应用配置：
+7.6 如果测试正确，执行以下命令应用配置：
 ```
 systemctl restart nginx.service
 ```
@@ -239,12 +237,12 @@ www	IN	AAAA	2001:da8:d800:381::200
 ```
 sudo su -
 cd /
-wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/install-nginx.sh
+wget http://202.38.64.1/install-nginx.sh
 
 bash ./install-nginx.sh yes 202.38.95.0/24 james@ustc.edu.cn "Zhang Huanjie"
 ```
 
-执行完脚本，请参考 7.4 修改配置和后续工作
+执行完脚本，重新启动，然后请参考 7.4 修改配置和后续工作
 
 
 
