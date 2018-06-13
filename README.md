@@ -47,7 +47,13 @@ Ubuntu网络配置与之前的变化较大，采用netplan管理，配置文件�
 请根据自己的网络情况，修改文件，修改后执行`sudo netplan apply`应用即可。
 
 ```
-network:
+udo ufw enable
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 22/tcp
+sudo ufw allow proto tcp from 202.38.64.0/24 to any port 22
+sudo ufw default deny
+etwork:
     version: 2
     ethernets:
         ens160:
@@ -61,7 +67,17 @@ network:
 
 检查点：上述ping之类的命令测试网络正常。
 
-## 三、设置防火墙
+# 注意：以下 三--七 部分有快捷脚本可用，请参见 十、快捷脚本 
+
+## 三、设置系统时区
+
+默认安装的系统时区是UTC，以下命令可以修改为北京时间：
+```
+sudo rm /etc/localtime
+sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+```
+
+## 四、设置防火墙
 
 安全是第一要务，对于nginx服务器，对外需开通80、443端口，对部分地址开通22端口以方便管理。
 
@@ -80,28 +96,28 @@ sudo ufw default deny
 
 检查点：命令`sudo ufw status`能看到设置的规则。
 
-## 四、优化conntrack性能
+## 五、优化conntrack性能
 
 Linux系统防火墙需要使用conntrack模块记录tcp/udp的连接信息，默认的设置(最多6万连接)不太适合反向代理这种服务使用。
 
-编辑文件`sudo vi /etc/modules`，增加2行：
+5.1 编辑文件`sudo vi /etc/modules`，增加2行：
 ```
 nf_conntrack_ipv4
 nf_conntrack_ipv6
 ```
 
-编辑文件`sudo vi /etc/modprobe.d/nf_conntrak.conf`，增加1行(按照以下设置，最多40万连接)：
+5.2 编辑文件`sudo vi /etc/modprobe.d/nf_conntrak.conf`，增加1行(按照以下设置，最多40万连接)：
 ```
 options nf_conntrack hashsize=50000
 ```
 
-编辑文件`sudo vi /etc/security/limits.conf`，增加2行：
+5.3 编辑文件`sudo vi /etc/security/limits.conf`，增加2行：
 ```
 *               soft    nofile  655360
 *               hard    nofile  655360
 ```
 
-编辑文件`sudo /etc/sysctl.d/90-conntrack.conf`，内容为：
+5.4 编辑文件`sudo /etc/sysctl.d/90-conntrack.conf`，内容为：
 ```
 net.netfilter.nf_conntrack_dccp_timeout_closereq = 60
 net.netfilter.nf_conntrack_dccp_timeout_closing = 60
@@ -143,35 +159,92 @@ net.netfilter.nf_conntrack_udp_timeout_stream = 30
 
 检查点：执行`ulimit -a`，显示的`open files`是655360
 
-## 五、安装nginx
+## 六、安装nginx
 
 执行`sudo apt-get install -y nginx`即可。
 
-## 六、修改nginx配置
+## 七、修改nginx配置
 
 建议使用git跟踪配置的变化。
 
-使用如下命令初始化（请修改自己的个人信息）：
+7.1 使用如下命令初始化（请修改自己的个人信息）：
 ```
-git config --global user.email "james@ustc.educ.n"
+git config --global user.email "james@ustc.educ.cn"
 git config --global user.name "Zhang Huanje"
 
 cd /etc/nginx
+git init
 git add *
 git commit -m init
 ```
 
-生成nginx需要的随机数（需要大约几分钟以搜集足够的随机信息）：
+7.2 生成nginx需要的随机数（需要大约几分钟以搜集足够的随机信息）：
 ```
 sudo mkdir /etc/nginx/ssl
 sudo openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
 ```
 
-下载配置文件模板。我们准备了一份模板，稍许修改就可以使用。
+7.3 下载配置文件模板。我们准备了一份模板，稍许修改就可以使用。
 
 ```
-curl 
+cd /etc/nginx
+sudo mv nginx.conf nginx.system.conf
+sudo wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/nginx.conf
+```
+
+7.4 修改配置文件`sudo vi nginx.conf`，修改最后面配置，使用自己学校的主机名、日志文件名、IP地址。
+
+7.5 修改目录`/var/log/nginx`的属主以便记录日志：
+```
+sudo chown www-data.adm /var/log/nginx
+sudo chown www-data.adm /var/log/nginx/*
+```
+
+7.6 测试配置是否正确，下面是测试正确的显示：
+```
+sudo nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
+
+7.7 如果测试正确，执行以下命令应用配置：
+```
 systemctl restart nginx.service
+```
+
+## 八、测试
+
+在自己机器上修改hosts文件，如下所示(请用自己的替换)：
+```
+222.195.81.200 www.ustc.edu.cn
+2001:da8:d800:381::200 www.ustc.edu.cn
+```
+修改后测试是否可以访问，并可以查看nginx服务器上`/var/log/nginx/`下的日志文件，看到有访问记录。
+
+## 九、启用IPv6访问
+
+经过测试访问正常后，可以修改DNS服务器上www.ustc.edu.cn的信息，增加
+
+```
+www	IN	AAAA	2001:da8:d800:381::200
+````
+这样就能观察到IPv6的访问，过一会查看 https://ipv6.ustc.edu.cn 的测试能看到v6 HTTP已经正常。
+
+## 十、快捷脚本
+
+以上 三---七 部分，有快捷脚本可用，只要完成二配置，网络通了的情况，执行以下脚本即可完成大部分配置，只要修改配置文件即可。
+
+注意，执行脚本时，请根据自己的信息替换参数。
+
+```
+sudo su -
+cd /
+wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/install-nginx.sh
+
+bash ./install-nginx.sh yes 202.38.95.0/24 james@ustc.edu.cn "Zhang Huanjie"
+```
+
+执行完脚本，请参考 7.4 修改配置和后续工作
 
 
 
