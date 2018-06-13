@@ -36,7 +36,7 @@
 
 使用安装时设置的普通用户登录系统，使用以下命令测试网络是否正常：
 ```bash
-ip add    		#查看网卡设置的ipv4/ipv6地址
+ip addr    		#查看网卡设置的ipv4/ipv6地址
 ip route  		#查看ipv4网关
 ip -f inet6 route 	#查看ipv6网关
 ping 202.38.64.1  	#检查ipv4连通性
@@ -63,7 +63,7 @@ network:
 
 ```
 
-检查点：上述ping之类的命令测试网络正常。
+![#1589F0](https://placehold.it/15/1589F0/000000?text=+) 检查点：上述ping之类的命令测试网络正常。
 
 网络正确配置后，可以从其他机器ssh连接Nginx服务器，以方便后面的拷贝-粘贴命令。
 
@@ -92,7 +92,7 @@ sudo ufw default deny
 
 如果您有强烈的好奇心，可以执行`sudo iptables -L -nv | more`看看系统实际使用的规则。
 
-检查点：命令`sudo ufw status verbose`能看到设置的规则。
+![#1589F0](https://placehold.it/15/1589F0/000000?text=+) 检查点：命令`sudo ufw status verbose`能看到设置的规则。
 
 ## 五、优化conntrack性能
 
@@ -155,9 +155,9 @@ net.netfilter.nf_conntrack_udp_timeout_stream = 30
 
 设置完成后，重启系统。
 
-检查点：重启后执行`dmesg | grep conn`会显示最大连接数为40万，`more /proc/sys/net/netfilter/*timeout*`会显示修改后的超时时间。
+![#1589F0](https://placehold.it/15/1589F0/000000?text=+) 检查点：重启后执行`dmesg | grep conn`会显示最大连接数为40万，`more /proc/sys/net/netfilter/*timeout*`会显示修改后的超时时间。
 
-检查点：执行`ulimit -a`，显示的`open files`是655360
+![#1589F0](https://placehold.it/15/1589F0/000000?text=+) 检查点：执行`ulimit -a`，显示的`open files`是655360
 
 ## 六、安装Nginx
 
@@ -179,7 +179,7 @@ git commit -m init
 ```
 
 7.2 生成Nginx需要的随机数（需要大约几分钟以搜集足够的随机信息）：
-```
+```bash
 sudo mkdir /etc/nginx/ssl
 sudo openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
 ```
@@ -202,7 +202,7 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 ```
 
 7.6 如果测试正确，执行以下命令应用配置：
-```
+```bash
 systemctl restart nginx.service
 ```
 
@@ -210,7 +210,6 @@ systemctl restart nginx.service
 
 在自己机器上修改hosts文件，如下所示(请用自己的替换)：
 ```
-222.195.81.200 www.ustc.edu.cn
 2001:da8:d800:381::200 www.ustc.edu.cn
 ```
 修改后测试是否可以访问，并可以查看Nginx服务器上`/var/log/nginx/`下的日志文件，看到有访问记录。
@@ -223,6 +222,13 @@ systemctl restart nginx.service
 www	IN	AAAA	2001:da8:d800:381::200
 ````
 这样就能观察到IPv6的访问，过一会查看 https://ipv6.ustc.edu.cn 的测试能看到v6 HTTP已经正常。
+
+正常工作后，可以将配置文件的变更在git中提交，命令是：
+```bash
+cd /etc/nginx
+sudo git add nginx.conf
+sudo git commit -m "www.ustc.edu.cn ok"
+```
 
 ## 十、快捷脚本
 
