@@ -1,4 +1,4 @@
-## [原创]step-by-step install nginx反向代理服务器(unbutu 18.04 LTS)
+## [原创]step-by-step install Nginx反向代理服务器(Unbutu 18.04 LTS)
 
 本文原创：
 
@@ -7,9 +7,9 @@
 
 修改时间：2018.06.13
 
-## 一、unbutu 18.04 LTS安装
+## 一、Unbutu 18.04 LTS安装
 
-获取安装包 iso，您可以从以下站点获取 `ubuntu-18.04-live-server-amd64.iso`，文件大小大约是806MB。
+获取安装包 ISO，您可以从以下站点获取 `ubuntu-18.04-live-server-amd64.iso`，文件大小大约是806MB。
 
 * [中国科大镜像站](http://mirrors.ustc.edu.cn/ubuntu-releases/18.04/)
 * [上海交大镜像站](http://ftp.sjtu.edu.cn/ubuntu-cd/18.04/)
@@ -52,11 +52,11 @@ Ubuntu网络配置与之前的变化较大，采用netplan管理，配置文件�
 
 ```
 udo ufw enable
+sudo ufw default deny
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw allow 22/tcp
 sudo ufw allow proto tcp from 202.38.64.0/24 to any port 22
-sudo ufw default deny
 etwork:
     version: 2
     ethernets:
@@ -79,25 +79,26 @@ etwork:
 ```
 sudo rm /etc/localtime
 sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+sudo cat Asia/Shanghai > /etc/timezone
 ```
 
 ## 四、设置防火墙
 
-安全是第一要务，对于nginx服务器，对外需开通80、443端口，对部分地址开通22端口以方便管理。
+安全是第一要务，对于Nginx服务器，对外需开通80、443端口，对部分地址开通22端口以方便管理。
 
 使用如下命令设置，请根据自己的管理地址段，替换下面的`202.38.64.0/24`
 ```
 sudo ufw enable
+sudo ufw default deny
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw allow proto tcp from 202.38.64.0/24 to any port 22
-sudo ufw default deny
 ```
 您可以使用命令`sudo ufw status numbered`查看设置的规则，如果设置错误，可以使用`sudo ufw delete [序号]`删除规则。
 
 如果您有强烈的好奇心，可以执行`sudo iptables -L -nv | more`看看系统实际使用的规则。
 
-检查点：命令`sudo ufw status`能看到设置的规则。
+检查点：命令`sudo ufw status verbose`能看到设置的规则。
 
 ## 五、优化conntrack性能
 
@@ -164,13 +165,13 @@ net.netfilter.nf_conntrack_udp_timeout_stream = 30
 
 检查点：执行`ulimit -a`，显示的`open files`是655360
 
-## 六、安装nginx
+## 六、安装Nginx
 
 执行`sudo apt-get install -y nginx`即可。
 
-## 七、修改nginx配置
+## 七、修改Nginx配置
 
-建议使用git跟踪配置的变化。
+建议使用Git跟踪配置的变化。
 
 7.1 使用如下命令初始化（请修改自己的个人信息）：
 ```
@@ -183,7 +184,7 @@ git add *
 git commit -m init
 ```
 
-7.2 生成nginx需要的随机数（需要大约几分钟以搜集足够的随机信息）：
+7.2 生成Nginx需要的随机数（需要大约几分钟以搜集足够的随机信息）：
 ```
 sudo mkdir /etc/nginx/ssl
 sudo openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
@@ -218,7 +219,7 @@ systemctl restart nginx.service
 222.195.81.200 www.ustc.edu.cn
 2001:da8:d800:381::200 www.ustc.edu.cn
 ```
-修改后测试是否可以访问，并可以查看nginx服务器上`/var/log/nginx/`下的日志文件，看到有访问记录。
+修改后测试是否可以访问，并可以查看Nginx服务器上`/var/log/nginx/`下的日志文件，看到有访问记录。
 
 ## 九、启用IPv6访问
 
@@ -247,7 +248,7 @@ bash ./install-nginx.sh yes 202.38.95.0/24 james@ustc.edu.cn "Zhang Huanjie"
 
 ## 十一、后续更精彩
 
-陆续有Let's encrypt 证书申请，https开通。
+陆续有Let's Encrypt 证书申请，HTTPS开通。
 
 ***
 欢迎 [加入我们整理资料](https://github.com/bg6cq/ITTS)
