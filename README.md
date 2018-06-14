@@ -322,6 +322,7 @@ cd /etc/nginx
 执行完毕后，会产生2个文件`/etc/nginx/ssl/testsite.ustc.edu.cn.key`和`/etc/nginx/ssl/testsite.ustc.edu.cn.pem`。
 
 11.5 使用证书
+
 修改nginx.conf文件，对应的配置如下：
 ```
         server {
@@ -344,6 +345,7 @@ cd /etc/nginx
 ```
 
 11.6 测试配置正常后，应用
+
 ```
 nginx -t && service nginx restart		#这条命令也是可用的
 ```
@@ -371,7 +373,8 @@ nginx -t && service nginx restart
 
 上述设置，只要用户访问过 https://testsite.ustc.edu.cn ，在604800秒，即7天内，总是会用https方式访问。
 
-如果HTTPS运行稳定，可以考虑想强制用户使用https访问，将配置改为如下：
+如果HTTPS运行稳定，可以强制用户使用https访问，将配置改为如下：
+
 ```
         server {
                 listen 80 ;
