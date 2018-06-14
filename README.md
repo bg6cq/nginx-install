@@ -7,6 +7,13 @@
 
 修改时间：2018.06.13
 
+对于仅仅支持IPv4的HTTP服务器，建议按下图所示步骤，通过增加Nginx反向代理服务器，逐步迁移为IPv4/v6 协议的HTTP、HTTPS、HTTP/2服务器。
+
+本文步骤一--步骤十描述了第一步的迁移过程。第二步迁移仅仅需要修改DNS服务器即可。
+本文步骤十一描述了第三步的迁移过程。
+
+![ipv6 trans](images/steps.png)
+
 ## 一、Ubuntu 18.04 LTS安装
 
 获取安装包 ISO，您可以从以下站点获取 `ubuntu-18.04-live-server-amd64.iso`，文件大小大约是806MB。
