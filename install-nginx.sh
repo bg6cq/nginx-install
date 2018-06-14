@@ -90,7 +90,7 @@ EOF
 
 
 echo ============= step 6
-apt-get install -y nginx
+apt-get install -y nginx git
 
 
 echo ============= step 7.1
