@@ -7,10 +7,18 @@
 
 修改时间：2018.06.13
 
-对于仅仅支持IPv4的HTTP服务器，按下图所示步骤，通过增加Nginx反向代理服务器，可以逐步迁移为支持IPv4/v6 协议的HTTP、HTTPS、HTTP/2服务器。
+对于仅仅支持IPv4的HTTP服务器，按下图所示步骤，通过增加Nginx反向代理服务器，可以分三步迁移为支持IPv4/v6 协议的HTTP、HTTPS、HTTP/2服务器。
 
-本文步骤一--步骤十描述了第一步的迁移过程。第二步迁移仅仅需要修改DNS服务器即可。
-本文步骤十一描述了第三步的迁移过程。
+步骤一--步骤十 描述了第一步的迁移过程。第二步迁移仅仅需要修改DNS服务器即可。
+步骤十一 描述了第三步的迁移过程。
+
+Nginx反向代理服务器发给HTTP服务器的请求，增加了以下字段：
+
+* X-Real-IP: 客户端来源IP地址
+* X-Forwarded-Proto: 用户请求的协议，是http或https
+
+特别注意：如果您的HTTP服务器前有WAF设备防护，增加Nginx服务器后，WAF设备看到的访问来源IP是Nginx服务器的IP地址，而不是真实的客户端IP地址。
+一旦WAF设备认为有攻击嫌疑而封锁IP，会导致Nginx服务器无法访问HTTP服务器。因此需要调整WAF设备的配置，让WAF设备把HTTP请求中的X-Real-IP字段作为来源IP地址。
 
 ![ipv6 trans](images/steps.png)
 
@@ -22,11 +30,11 @@
 * [上海交大镜像站](http://ftp.sjtu.edu.cn/ubuntu-cd/18.04/)
 * [163镜像站](http://mirrors.163.com/ubuntu-releases/18.04/)
 
-说明：这里还有个更加灵活的安装程序，熟练人士可以选择 [中国科大镜像站](http://mirrors.ustc.edu.cn/ubuntu-cdimage/releases/18.04/release/)/ubuntu-18.04-server-amd64.iso，安装后大约占用1.5G空间。
+说明：Ubuntu还有个更加灵活的安装程序，安装后占用空间更少，安装过程选择更多，熟练人士可以选择 [中国科大镜像站](http://mirrors.ustc.edu.cn/ubuntu-cdimage/releases/18.04/release/)/ubuntu-18.04-server-amd64.iso，安装后大约占用1.5G空间。经测试该安装程序并不稳定。
 
-使用物理服务器或新建虚拟机。如果使用虚拟机，选择4个虚拟CPU，2G内存，40G硬盘一般就够用，类型可以选Ubuntu Linux(64-bit)。
+安装完的系统占用磁盘空间为3.5G。使用物理服务器或新建虚拟机都可以。如果使用虚拟机，选择4个虚拟CPU，2G内存，40G硬盘（如果想保存更多日志可以适当加大空间）一般就够用，类型可以选Ubuntu Linux(64-bit)。
 
-使用光盘镜像引导，按提示安装即可，一般在10分钟内完成。有疑问，可以参考 
+使用光盘镜像引导，按提示安装即可，一般在10分钟内完成。安装过程中有疑问，请参考 
 [Ubuntu 18.04 Server 版安装过程图文详解](https://blog.csdn.net/zhengchaooo/article/details/80145744)。
 
 如果安装时设置了网络，安装过程中会连接官方服务器获取最新的软件包，因此请保持网络畅通。
@@ -35,7 +43,6 @@
 
 注意：Ubuntu 系统要求必须使用一个普通用户登录，执行需要特权的命令时，使用`sudo ....`来临时切换为root用户进行。如果需要以root身份执行较多的命令，可以使用`sudo su -`切换为root用户（虽然不建议这样做），这样一来就不需要每次输入`sudo`了。
 
-安装完的系统占用磁盘空间为3.5G（可以用`df`查看）。
 
 ## 二、配置网络
 
