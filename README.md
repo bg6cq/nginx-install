@@ -408,6 +408,36 @@ nginx -t && systemctl restart nginx.service
 
 因此如果域名下有大量网站需要代理，可以使用 \*.ustc.edu.cn 之类的通配符证书，申请一个证书供多个网站使用。
 
+## 十二、Nginx状态监视
+
+Nginx运行时的连接信息对运行很有用，下面的操作完成后，可以提供类似 [http://202.38.64.1/nginx](http://202.38.64.1/nginx/) 的统计图。
+
+注：以下命令均在`sudo su -`后执行
+
+```bash
+mkdir /usr/share/nginx/html/status/
+apt-get install -y librrds-perl libwww-perl rrdtool
+wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/rrd_nginx.pl -O /etc/nginx/rrd_nginx.pl
+wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/status_index.html -O /usr/share/nginx/html/status/index.html
+
+rrdtool create /usr/share/nginx/html/status/nginx.rrd -s 60 \
+         DS:requests:COUNTER:120:0:100000 \
+         DS:total:GAUGE:120:0:60000 \
+         DS:reading:GAUGE:120:0:60000 \
+         DS:writing:GAUGE:120:0:60000 \
+         DS:waiting:GAUGE:120:0:60000 \
+         RRA:AVERAGE:0.5:1:2880 \
+         RRA:AVERAGE:0.5:30:672 \
+         RRA:AVERAGE:0.5:120:732 \
+         RRA:AVERAGE:0.5:720:1460
+```
+然后执行`crontab -e`设置以下定时任务：
+```
+* * * * * perl /etc/nginx/rrd_nginx.pl
+```
+过一会，就可以使用 http://x.x.x.x/status (x.x.x.x是Nginx服务器IP地址) 查看状态页面。
+
+如果仅仅允许部分IP查看状态页面，可以修改nginx.conf中，增加IP地址限制。
 
 ***
 欢迎 [加入我们整理资料](https://github.com/bg6cq/ITTS)
