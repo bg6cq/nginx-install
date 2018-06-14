@@ -175,6 +175,7 @@ net.netfilter.nf_conntrack_udp_timeout_stream = 30
 
 7.1 使用如下命令初始化（请修改自己的个人信息）：
 ```bash
+sudo su -
 git config --global user.email "james@ustc.educ.cn"
 git config --global user.name "Zhang Huanje"
 
@@ -231,9 +232,10 @@ www	IN	AAAA	2001:da8:d800:381::200
 
 正常工作后，可以将配置文件的变更在git中提交，命令是：
 ```bash
+sudo su -
 cd /etc/nginx
-sudo git add nginx.conf
-sudo git commit -m "www.ustc.edu.cn ok"
+git add nginx.conf
+git commit -m "www.ustc.edu.cn ok"
 ```
 
 ## 十、快捷脚本
@@ -361,9 +363,10 @@ nginx -t && systemctl restart nginx.service
 
 正常工作后，可以将配置文件的变更在git中提交，命令是：
 ```bash
+sudo su -
 cd /etc/nginx
-sudo git add nginx.conf
-sudo git commit -m "https://testsite.ustc.edu.cn ok"
+git add nginx.conf
+git commit -m "https://testsite.ustc.edu.cn ok"
 ```
 
 11.7 证书更新
@@ -447,9 +450,10 @@ rrdtool create /usr/share/nginx/html/status/nginx.rrd -s 60 \
 
 如果都工作正常，可以把相关修改在git中提交，命令是：
 ```bash
+sudo su -
 cd /etc/nginx
-sudo git add rrd_nginx.pl
-sudo git commit -m "rrd_nginx"
+git add rrd_nginx.pl
+git commit -m "rrd_nginx"
 ```
 
 ## 十三、系统和软件的更新
