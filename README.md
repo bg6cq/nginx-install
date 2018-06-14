@@ -1,4 +1,4 @@
-## [原创]step-by-step install Nginx反向代理服务器(Unbutu 18.04 LTS)
+## [原创]step-by-step install Nginx反向代理服务器(Ubuntu 18.04 LTS)
 
 本文原创：
 
@@ -7,7 +7,7 @@
 
 修改时间：2018.06.13
 
-## 一、Unbutu 18.04 LTS安装
+## 一、Ubuntu 18.04 LTS安装
 
 获取安装包 ISO，您可以从以下站点获取 `ubuntu-18.04-live-server-amd64.iso`，文件大小大约是806MB。
 
@@ -83,10 +83,10 @@ sudo timedatectl set-timezone Asia/Shanghai
 使用如下命令设置，请根据自己的管理地址段，替换下面的`202.38.64.0/24`
 ```bash
 sudo ufw enable
+sudo ufw default deny
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw allow proto tcp from 202.38.64.0/24 to any port 22
-sudo ufw default deny
 ```
 您可以使用命令`sudo ufw status numbered`查看设置的规则，如果设置错误，可以使用`sudo ufw delete [序号]`删除规则。
 
@@ -248,17 +248,17 @@ bash ./install-nginx.sh yes 202.38.95.0/24 james@ustc.edu.cn "Zhang Huanjie"
 
 ## 十一、HTTPS支持
 
-警告：上海交大 章思宇 老师提醒，如果仅仅使用Nginx处理IPv6流量并支持HTTPS访问，同时处理IPv4流量的服务器不支持HTTPS，这时开通IPv6流量的HTTPS可能会带来负面影响，原因是有些搜索引擎会通过v6收录https的链接，导致v4用户不能访问。
+警告：上海交大 章思宇 老师提醒，如果仅仅使用Nginx处理IPv6流量并支持HTTPS访问，同时处理IPv4流量的服务器不支持HTTPS，这时开通IPv6流量的HTTPS可能会带来负面影响，原因是有些搜索引擎会通过v6收录HTTPS的链接，导致v4用户不能访问。
 
 避免这种情况出现需要在v4/v6上同时支持HTTPS访问，其中最简单的方式是把所有流量经过Nginx代理。中国科大已经这样用了10多年，在一台Nginx服务器上对教育网、电信、联通、移动出口提供服务，运行稳定。
 
 假定 http://testsite.ustc.edu.cn 需要增加https支持，步骤如下：
 
-注：以下命令均在`sudo su -s`后执行
+注：以下命令均在`sudo su -`后执行
 
 11.1 下载getssl，准备环境
 
-`/etc/nginx/ssl/web`是用来存放Let's encrypt要用到随机数的目录
+`/etc/nginx/ssl/web`是用来存放Let's Encrypt要用到随机数的目录
 
 ```bash
 mkdir /etc/nginx/ssl/web
@@ -347,7 +347,7 @@ cd /etc/nginx
 11.6 测试配置正常后，应用
 
 ```
-nginx -t && service nginx restart		#这条命令也是可用的
+nginx -t && systemctl restart nginx.service
 ```
 
 这时可以通过 https://testsite.ustc.edu.cn 访问，也可以使用[SSL Labs](https://www.ssllabs.com/ssltest/analyze.html)测试网站的SSL得分情况。
@@ -362,11 +362,11 @@ sudo git commit -m "https://testsite.ustc.edu.cn ok"
 
 11.7 证书更新
 
-Let's encrypt 证书有效期为90天，建议在60天时进行更新，更新的命令是；
+Let's Encrypt 证书有效期为90天，建议在60天时进行更新，更新的命令是；
 ```
 cd /etc/nginx
 ./getssl -U testsite.ustc.edu.cn
-nginx -t && service nginx restart
+nginx -t && systemctl restart nginx.service
 ```
 
 11.8 强制用户使用https访问
@@ -402,11 +402,11 @@ nginx -t && service nginx restart
         }
 ```
 
-11.9 Let's encrypt 证书的数量和频度限制
+11.9 Let's Encrypt 证书的数量和频度限制
 
-对使用影响最大的是Let's encrypt 证书的频度限制，每7天仅仅允许申请20个证书，到达这个限制后，已有的证书仍旧可以更新。
+对使用影响最大的是Let's Encrypt 证书的频度限制，每7天仅仅允许申请20个证书，到达这个限制后，已有的证书仍旧可以更新。
 
-因此如果域名下有大量网站需要代理，可以使用 *.ustc.edu.cn 之类的通配符证书，申请一个证书供多个网站使用。
+因此如果域名下有大量网站需要代理，可以使用 \*.ustc.edu.cn 之类的通配符证书，申请一个证书供多个网站使用。
 
 
 ***
