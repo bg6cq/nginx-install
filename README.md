@@ -83,10 +83,10 @@ sudo timedatectl set-timezone Asia/Shanghai
 使用如下命令设置，请根据自己的管理地址段，替换下面的`202.38.64.0/24`
 ```bash
 sudo ufw enable
-sudo ufw default deny
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw allow proto tcp from 202.38.64.0/24 to any port 22
+sudo ufw default deny
 ```
 您可以使用命令`sudo ufw status numbered`查看设置的规则，如果设置错误，可以使用`sudo ufw delete [序号]`删除规则。
 
