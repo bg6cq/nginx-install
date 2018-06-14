@@ -452,5 +452,14 @@ sudo git add rrd_nginx.pl
 sudo git commit -m "rrd_nginx"
 ```
 
+## 十三、系统和软件的更新
+
+一直到2023年，Ubuntu都会为 Ubuntu 18.04 LTS提供软件更新服务。只要执行以下命令，即可将系统中软件更新：
+```
+sudo apt-get update
+sudo apt-get upgrade
+```
+
+
 ***
 欢迎 [加入我们整理资料](https://github.com/bg6cq/ITTS)
