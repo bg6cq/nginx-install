@@ -250,7 +250,7 @@ bash ./install-nginx.sh yes 202.38.95.0/24 james@ustc.edu.cn "Zhang Huanjie"
 
 警告：上海交大 章思宇 老师提醒，如果仅仅使用Nginx处理IPv6流量并支持HTTPS访问，同时处理IPv4流量的服务器不支持HTTPS，这时开通IPv6流量的HTTPS可能会带来负面影响，原因是有些搜索引擎会通过v6收录https的链接，导致v4用户不能访问。
 
-避免这种情况出现最好的解决办法是在v4/v6上同时支持HTTPS访问。
+避免这种情况出现需要在v4/v6上同时支持HTTPS访问，其中最简单的方式是把所有流量经过Nginx代理。中国科大已经这样用了10多年，在一台Nginx服务器上对教育网、电信、联通、移动出口提供服务，运行稳定。
 
 假定 http://testsite.ustc.edu.cn 需要增加https支持，步骤如下：
 
