@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [ ! $# -eq 4 ]; then
     echo bash ./install-nginx.sh yes x.x.x.x/24 james@ustc.edu.cn "Zhang Huanjie"
     echo x.x.x.x is your ssh client network
