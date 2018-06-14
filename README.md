@@ -445,5 +445,12 @@ rrdtool create /usr/share/nginx/html/status/nginx.rrd -s 60 \
 
 如果仅仅允许部分IP查看状态页面，可以修改nginx.conf中，增加IP地址限制。
 
+如果都工作正常，可以把相关修改在git中提交，命令是：
+```bash
+cd /etc/nginx
+sudo git add rrd_nginx.pl
+sudo git commit -m "rrd_nginx"
+```
+
 ***
 欢迎 [加入我们整理资料](https://github.com/bg6cq/ITTS)
