@@ -117,7 +117,7 @@ nf_conntrack_ipv4
 nf_conntrack_ipv6
 ```
 
-5.2 编辑文件`sudo vi /etc/modprobe.d/nf_conntrak.conf`，增加1行(连接数是hashsize*8，按照以下设置，最多40万连接)：
+5.2 新建文件`sudo vi /etc/modprobe.d/nf_conntrak.conf`，增加1行(连接数是hashsize*8，按照以下设置，最多40万连接)：
 ```bash
 options nf_conntrack hashsize=50000
 ```
@@ -130,7 +130,7 @@ root            soft    nofile  655360
 root            hard    nofile  655360
 ```
 
-5.4 编辑文件`sudo vi /etc/sysctl.d/90-conntrack.conf`，内容为：
+5.4 新建文件`sudo vi /etc/sysctl.d/90-conntrack.conf`，内容为：
 ```
 net.netfilter.nf_conntrack_dccp_timeout_closereq = 60
 net.netfilter.nf_conntrack_dccp_timeout_closing = 60
