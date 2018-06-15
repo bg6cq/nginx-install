@@ -389,7 +389,7 @@ nginx -t && systemctl restart nginx.service
 
 上述设置，只要用户访问过 https://testsite.ustc.edu.cn ，在604800秒，即7天内，总是会用https方式访问。
 
-如果HTTPS运行稳定，可以强制useragent非 Mozila/4.0(较新的浏览器)的访问强制使用https访问，将配置改为如下：
+如果HTTPS运行稳定，可以强制useragent带有Mozila/5.0(较新的浏览器)的访问强制使用https访问，将配置改为如下：
 
 ```
         server {
@@ -399,7 +399,7 @@ nginx -t && systemctl restart nginx.service
                 access_log /var/log/nginx/host.testsite.ustc.edu.cn.access.log main;
 		location / {
 			location / {
-                        if ( $http_user_agent !~ "(Mozilla/4.0)" ) {
+                        if ( $http_user_agent ~ "(Mozilla/5.0)" ) {
                                 return  301 https://$server_name$request_uri;
                         }
                         proxy_pass http://202.38.64.40/;
