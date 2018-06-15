@@ -269,7 +269,9 @@ bash ./install-nginx.sh yes 202.38.95.0/24 james@ustc.edu.cn "Zhang Huanjie"
 
 避免这种情况出现需要在v4/v6上同时支持HTTPS访问，其中最简单的方式是把所有流量经过Nginx代理。中国科大已经这样用了10多年，在一台Nginx服务器上对教育网、电信、联通、移动出口提供服务，运行稳定。
 
-假定 http://testsite.ustc.edu.cn 需要增加https支持，步骤如下：
+Let’s Encrypt是免费的证书签发站点，非常方便。如果不愿意购买证书，完全可以满足大部分站点的使用。
+
+假定 http://testsite.ustc.edu.cn 已经由Nginx服务器代理，需要增加https支持，步骤如下：
 
 注：以下命令均在`sudo su -`后执行
 
