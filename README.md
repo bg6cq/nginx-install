@@ -342,23 +342,31 @@ cd /etc/nginx
 
 11.5 使用证书
 
-修改nginx.conf文件，对应的配置如下：
+修改nginx.conf文件，对应的配置如下(其中Content-Security-Policy可以让浏览器把页面中的http资源引用自动转换为https访问)：
 ```
         server {
                 listen 80 ;
                 listen [::]:80 ;
+                server_name testsite.ustc.edu.cn;
+                access_log /var/log/nginx/host.testsite.ustc.edu.cn.access.log main;
+		location / {
+                        proxy_pass http://202.38.64.40/;
+                }
+                location /.well-known/ {
+                        root /etc/nginx/ssl/web/;
+                }
+        }
+        server {
                 listen 443 ssl http2;
                 listen [::]:443 ssl http2;
                 server_name testsite.ustc.edu.cn;
                 ssl_certificate /etc/nginx/ssl/testsite.ustc.edu.cn.pem;
                 ssl_certificate_key /etc/nginx/ssl/testsite.ustc.edu.cn.key;
                 add_header Strict-Transport-Security $hsts_header;
+                add_header Content-Security-Policy upgrade-insecure-requests;
                 access_log /var/log/nginx/host.testsite.ustc.edu.cn.access.log main;
                 location / {
                         proxy_pass http://202.38.64.40/;
-                }
-                location /.well-known/ {
-                        root /etc/nginx/ssl/web/;
                 }
         }
 ```
@@ -419,6 +427,7 @@ nginx -t && systemctl restart nginx.service
                 ssl_certificate /etc/nginx/ssl/testsite.ustc.edu.cn.pem;
                 ssl_certificate_key /etc/nginx/ssl/testsite.ustc.edu.cn.key;
                 add_header Strict-Transport-Security $hsts_header;
+		add_header Content-Security-Policy upgrade-insecure-requests;
                 access_log /var/log/nginx/host.testsite.ustc.edu.cn.access.log main;
                 location / {
                         proxy_pass http://202.38.64.40/;
