@@ -210,6 +210,20 @@ sudo wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/nginx.con
 
 7.4 修改配置文件`sudo vi nginx.conf`，修改最后部分的配置，改为自己的主机名、日志文件名、IP地址。
 
+最后部分配置如下，请修改主机名、日志文件名、IP地址（IP地址是网站的IPv4地址）
+```
+server {
+		listen 80 ;
+		listen [::]:80 ;
+		server_name www.ustc.edu.cn;
+		access_log /var/log/nginx/host.www.ustc.edu.cn.access.log main;
+		location / {
+			proxy_pass http://202.38.64.99/;
+		}
+	}
+}
+```
+
 7.5 测试配置是否正确，下面是测试正确时的显示：
 ```
 sudo nginx -t
@@ -224,7 +238,7 @@ systemctl restart nginx.service
 
 ## 八、测试
 
-在自己机器上修改hosts文件，如下所示(请用自己的替换)：
+在自己机器上修改hosts文件，如下所示(请用自己服务器的IPv6地址替换)：
 ```
 2001:da8:d800:381::200 www.ustc.edu.cn
 ```
