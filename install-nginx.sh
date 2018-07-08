@@ -41,7 +41,7 @@ echo nf_conntrack_ipv4 >> /etc/modules
 echo nf_conntrack_ipv6 >> /etc/modules
 
 echo ============= step 5.2
-echo "options nf_conntrack hashsize=50000" > /etc/modprobe.d/nf_conntrak.conf
+echo "options nf_conntrack hashsize=50000" > /etc/modprobe.d/nf_conntrack.conf
 
 echo ============= step 5.3
 echo << EOF >>  /etc/security/limits.conf
