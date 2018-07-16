@@ -119,7 +119,7 @@ nf_conntrack_ipv4
 nf_conntrack_ipv6
 ```
 
-5.2 新建文件`sudo vi /etc/modprobe.d/nf_conntrak.conf`，增加1行(连接数是hashsize*8，按照以下设置，最多40万连接)：
+5.2 新建文件`sudo vi /etc/modprobe.d/nf_conntrack.conf`，增加1行(连接数是hashsize*8，按照以下设置，最多40万连接)：
 ```bash
 options nf_conntrack hashsize=50000
 ```
