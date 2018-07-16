@@ -82,20 +82,18 @@ net.netfilter.nf_conntrack_udp_timeout = 10
 net.netfilter.nf_conntrack_udp_timeout_stream = 30
 EOF
 
-
 echo ============= step 6
 apt-get install -y nginx git
-
 
 echo ============= step 7.2
 sudo mkdir /etc/nginx/ssl
 sudo openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
 
-
 echo ============= step 7.3
 cd /etc/nginx
 mv nginx.conf nginx.system.conf
 wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/nginx.conf
+
 
 echo end of script
 echo now please do a reboot!!!

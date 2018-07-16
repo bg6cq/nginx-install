@@ -283,7 +283,7 @@ sudo su -
 cd /
 wget http://202.38.64.1/install-nginx.sh
 
-bash ./install-nginx.sh yes 202.38.95.0/24 james@ustc.edu.cn "Zhang Huanjie"
+bash ./install-nginx.sh 202.38.95.0/24
 ```
 
 执行完脚本，重新启动，然后请参考 7.4 修改配置和后续工作
