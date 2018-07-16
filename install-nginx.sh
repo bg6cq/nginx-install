@@ -1,14 +1,9 @@
 #!/bin/bash
 
-if [ ! $# -eq 4 ]; then
-    echo bash ./install-nginx.sh yes x.x.x.x/24 james@ustc.edu.cn "Zhang Huanjie"
+if [ ! $# -eq 1 ]; then
+    echo bash ./install-nginx.sh x.x.x.x/24"
     echo x.x.x.x is your ssh client network
     echo such as 202.38.64.0/24
-fi
-
-if [ ! $1 == "yes" ]; then
-	echo arg1 is not yes
-	exit
 fi
 
 if [ -f /etc/nginx/nginx.conf ]; then
@@ -24,7 +19,7 @@ if [ $retcode -eq 1 ]; then
 fi
 
 echo install nginx
-echo ssh client is $2
+echo ssh client is $1
 
 echo ============= step 3
 timedatectl set-timezone Asia/Shanghai
@@ -33,7 +28,7 @@ echo ============= step 4
 ufw enable
 ufw allow 80/tcp
 ufw allow 443/tcp
-ufw allow proto tcp from $2 to any port 22
+ufw allow proto tcp from $1 to any port 22
 ufw default deny
 
 echo ============= step 5.1
@@ -41,7 +36,7 @@ echo nf_conntrack_ipv4 >> /etc/modules
 echo nf_conntrack_ipv6 >> /etc/modules
 
 echo ============= step 5.2
-echo "options nf_conntrack hashsize=50000" > /etc/modprobe.d/nf_conntrak.conf
+echo "options nf_conntrack hashsize=50000" > /etc/modprobe.d/nf_conntrack.conf
 
 echo ============= step 5.3
 echo << EOF >>  /etc/security/limits.conf
@@ -92,15 +87,6 @@ echo ============= step 6
 apt-get install -y nginx git
 
 
-echo ============= step 7.1
-git config --global user.email "$3"
-git config --global user.name "$4"
-
-cd /etc/nginx
-git init
-git add *
-git commit -m init
-
 echo ============= step 7.2
 sudo mkdir /etc/nginx/ssl
 sudo openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
@@ -118,4 +104,3 @@ echo after boot up, please do the following
 echo vi /etc/nginx/nginx.conf
 echo nginx -t
 echo 
-echo now please do a reboot!!!
