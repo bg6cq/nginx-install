@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! $# -eq 1 ]; then
-    echo bash ./install-nginx.sh x.x.x.x/24"
+    echo bash ./install-nginx.sh x.x.x.x/24
     echo x.x.x.x is your ssh client network
     echo such as 202.38.64.0/24
 fi
