@@ -47,6 +47,9 @@ root            hard    nofile  655360
 EOF
 
 echo ============= step 5.4
+echo "fs.file-max = 655360" >> /etc/sysctl.conf
+
+echo ============= step 5.5
 cat << EOF > /etc/sysctl.d/90-conntrack.conf
 net.netfilter.nf_conntrack_dccp_timeout_closereq = 60
 net.netfilter.nf_conntrack_dccp_timeout_closing = 60

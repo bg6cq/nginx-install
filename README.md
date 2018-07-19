@@ -132,7 +132,12 @@ root            soft    nofile  655360
 root            hard    nofile  655360
 ```
 
-5.4 新建文件`sudo vi /etc/sysctl.d/90-conntrack.conf`，内容为：
+5.4 编辑文件`sudo vi /etc/sysctl.conf`，增加1行:
+```
+fs.file-max = 655360
+```
+
+5.5 新建文件`sudo vi /etc/sysctl.d/90-conntrack.conf`，内容为：
 ```
 net.netfilter.nf_conntrack_dccp_timeout_closereq = 60
 net.netfilter.nf_conntrack_dccp_timeout_closing = 60
