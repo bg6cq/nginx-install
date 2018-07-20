@@ -440,7 +440,6 @@ nginx -t && systemctl restart nginx.service
                 server_name testsite.ustc.edu.cn;
                 access_log /var/log/nginx/host.testsite.ustc.edu.cn.access.log main;
 		location / {
-			location / {
                         if ( $http_user_agent ~ "(Mozilla/5.0)" ) {
                                 return  301 https://$server_name$request_uri;
                         }
