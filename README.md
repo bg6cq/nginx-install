@@ -74,6 +74,7 @@ network:
             dhcp4: no
             addresses: [222.195.81.200/24,'2001:da8:d800:381::200/64']
             gateway4: 222.195.81.1
+            gateway6: 2001:da8:d800:381::1
             nameservers:
                     addresses: [202.38.64.1,202.38.64.56]
 ```
