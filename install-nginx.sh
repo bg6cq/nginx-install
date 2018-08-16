@@ -4,6 +4,7 @@ if [ ! $# -eq 1 ]; then
     echo bash ./install-nginx.sh x.x.x.x/24
     echo x.x.x.x is your ssh client network
     echo such as 202.38.64.0/24
+    exit
 fi
 
 if [ -f /etc/nginx/nginx.conf ]; then
@@ -86,7 +87,7 @@ net.netfilter.nf_conntrack_udp_timeout_stream = 30
 EOF
 
 echo ============= step 6
-apt-get install -y nginx git
+apt install -y nginx git
 
 echo ============= step 7.2
 sudo mkdir /etc/nginx/ssl

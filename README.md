@@ -182,7 +182,7 @@ net.netfilter.nf_conntrack_udp_timeout_stream = 30
 
 ## 六、安装Nginx
 
-执行`sudo apt-get install -y nginx`即可。
+执行`sudo apt install -y nginx`即可。
 
 ## 七、修改Nginx配置
 
@@ -479,7 +479,7 @@ Nginx运行时的连接信息对运行很有用，下面的操作完成后，可
 
 ```bash
 mkdir /usr/share/nginx/html/status/
-apt-get install -y librrds-perl libwww-perl rrdtool
+apt install -y librrds-perl libwww-perl rrdtool
 wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/rrd_nginx.pl -O /etc/nginx/rrd_nginx.pl
 wget https://raw.githubusercontent.com/bg6cq/nginx-install/master/status_index.html -O /usr/share/nginx/html/status/index.html
 
@@ -514,8 +514,8 @@ git commit -m "rrd_nginx"
 
 一直到2023年，Ubuntu都会为 Ubuntu 18.04 LTS提供软件更新服务。只要执行以下命令，即可将系统中软件更新：
 ```
-sudo apt-get update
-sudo apt-get upgrade
+sudo apt update
+sudo apt upgrade
 ```
 
 
