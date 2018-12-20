@@ -125,12 +125,11 @@ nf_conntrack_ipv6
 options nf_conntrack hashsize=50000
 ```
 
-5.3 编辑文件`sudo vi /etc/security/limits.conf`，增加4行：
+5.3 编辑文件`/etc/systemd/system/nginx.service.d/limit.conf`，增加2行：
 ```
-*               soft    nofile  655360
-*               hard    nofile  655360
-root            soft    nofile  655360
-root            hard    nofile  655360
+mkdir /etc/systemd/system/nginx.service.d/
+echo "[Service]" > /etc/systemd/system/nginx.service.d/limit.conf
+echo "LimitNOFILE=655360" >> /etc/systemd/system/nginx.service.d/limit.conf
 ```
 
 5.4 编辑文件`sudo vi /etc/sysctl.conf`，增加1行:
@@ -177,8 +176,6 @@ net.netfilter.nf_conntrack_udp_timeout_stream = 30
 设置完成后，重启系统。
 
 ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) 检查点：重启后执行`dmesg | grep conn`会显示最大连接数为40万，`more /proc/sys/net/netfilter/*timeout*`会显示修改后的超时时间。
-
-![#1589F0](https://placehold.it/15/1589F0/000000?text=+) 检查点：执行`ulimit -a`，显示的`open files`是655360
 
 ## 六、安装Nginx
 

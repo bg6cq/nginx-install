@@ -40,12 +40,9 @@ echo ============= step 5.2
 echo "options nf_conntrack hashsize=50000" > /etc/modprobe.d/nf_conntrack.conf
 
 echo ============= step 5.3
-cat << EOF >>  /etc/security/limits.conf
-*               soft    nofile  655360
-*               hard    nofile  655360
-root            soft    nofile  655360
-root            hard    nofile  655360
-EOF
+mkdir /etc/systemd/system/nginx.service.d/
+echo "[Service]" > /etc/systemd/system/nginx.service.d/limit.conf
+echo "LimitNOFILE=655360" >> /etc/systemd/system/nginx.service.d/limit.conf
 
 echo ============= step 5.4
 echo "fs.file-max = 655360" >> /etc/sysctl.conf
