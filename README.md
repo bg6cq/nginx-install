@@ -346,7 +346,7 @@ cd /etc/nginx
 
 编辑文件`vi /root/.getssl/getssl.cfg`，修改3个地方（邮件是为了获取证书即将到期的通知）
 ```
-CA="https://acme-v01.api.letsencrypt.org"
+CA="https://acme-v02.api.letsencrypt.org"
 ACCOUNT_EMAIL="james@ustc.edu.cn"
 #CHECK_REMOTE="true"
 ACL=('/etc/nginx/ssl/web/.well-known/acme-challenge')
